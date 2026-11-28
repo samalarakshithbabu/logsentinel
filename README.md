@@ -1,5 +1,19 @@
 # LogSentinel: Intelligent Application Error Logging, Monitoring & Analytics Platform
 
+<div align="center">
+
+![React](https://img.shields.io/badge/React-18.2-61DAFB?style=flat-square&logo=react)
+![Node.js](https://img.shields.io/badge/Node.js-18+-339933?style=flat-square&logo=node.js)
+![Express](https://img.shields.io/badge/Express-4.18-000000?style=flat-square&logo=express)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.109-009688?style=flat-square&logo=fastapi)
+![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=flat-square&logo=python)
+![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=flat-square&logo=mysql)
+![Redis](https://img.shields.io/badge/Redis-7-DC382D?style=flat-square&logo=redis)
+![Docker](https://img.shields.io/badge/Docker-Enabled-2496ED?style=flat-square&logo=docker)
+![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)
+
+</div>
+
 **Product Name:** LogSentinel  
 **Repository:** Error-Logging-Platform (renamed to logsentinel)
 
@@ -23,39 +37,54 @@ LogSentinel addresses this by storing structured error records in MySQL and expo
 
 ## System Architecture
 
+```mermaid
+graph TB
+    subgraph Clients
+        A[Application/API Client]
+        D[React Dashboard]
+    end
+
+    subgraph Express_API [Express API - Port 5000]
+        A1[JWT Auth]
+        A2[Validation]
+        A3[Rate Limiting]
+        A4[Error Persistence]
+        A5[Comments]
+        A6[Analytics Proxy]
+    end
+
+    subgraph FastAPI_Analytics [FastAPI Analytics - Port 8000]
+        F1[Pandas Aggregations]
+        F2[Spike Detection]
+        F3[Trend Analysis]
+    end
+
+    subgraph MySQL [MySQL Database]
+        DB[(error_logging_platform)]
+    end
+
+    A -->|Error Logs| Express_API
+    D -->|API Calls| Express_API
+    Express_API -->|Read/Write| DB
+    Express_API -->|Proxy| FastAPI_Analytics
+    FastAPI_Analytics -->|Aggregations| DB
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                        CLIENTS                                   │
-│  ┌─────────────┐              ┌─────────────────────────────┐   │
-│  │ Application │              │      React Dashboard        │   │
-│  │   or API    │              │   (Login, Error List,       │   │
-│  │   Client    │              │    Analytics, Projects)     │   │
-│  └──────┬──────┘              └──────────────┬──────────────┘   │
-└─────────│────────────────────────────────────│──────────────────┘
-          │                                    │
-          ▼                                    ▼
-┌─────────────────────────┐         ┌─────────────────────────┐
-│      EXPRESS API        │         │      FASTAPI ANALYTICS  │
-│      (Port 5000)        │         │      (Port 8000)        │
-│  ┌───────────────────┐  │         │  ┌───────────────────┐  │
-│  │  JWT Auth         │  │         │  │  Pandas           │  │
-│  │  Validation       │  │         │  │  Aggregations     │  │
-│  │  Rate Limiting    │  │         │  │  Spike Detection  │  │
-│  │  Error Persistence│  │         │  │  Trend Analysis   │  │
-│  │  Comments         │  │         │  └─────────┬─────────┘  │
-│  │  Summary Counts   │  │         │            │            │
-│  │  Analytics Proxy  │──┼────────┼────────────┘            │
-│  └─────────┬─────────┘  │         │                         │
-└────────────┼────────────┘         │                         │
-             │                    │                         │
-             ▼                    ▼                         ▼
-    ┌─────────────────────────────────────────────────────────────┐
-    │                    MYSQL DATABASE                            │
-    │  (error_logging_platform)                                    │
-    │  Tables: users, projects, error_logs, error_events,         │
-    │          comments, notifications, audit_logs                │
-    └─────────────────────────────────────────────────────────────┘
-```
+
+---
+
+## Technology Stack
+
+| Area | Technology | Evidence |
+|------|------------|----------|
+| Frontend | React 18, React Router 6, React Hook Form, Axios, Chart.js, react-chartjs-2, jwt-decode, date-fns | `frontend/package.json` |
+| Frontend Delivery | Create React App (`react-scripts` 5) dev, Nginx production | `frontend/Dockerfile`, `nginx.conf` |
+| Backend | Node.js 18+, Express 4, Helmet, CORS, express-validator, express-rate-limit, bcryptjs, jsonwebtoken, mysql2, Axios, dotenv | `backend/package.json` |
+| Languages | JavaScript (UI/API), Python (analytics), SQL (schema) | Repository layout |
+| Database | MySQL 8, InnoDB, utf8mb4 | `database/schema.sql`, `docker-compose.yml` |
+| Cache | Redis 7 Alpine (Compose only - no app client) | `docker-compose.yml` |
+| Analytics | FastAPI 0.109, Uvicorn, SQLAlchemy 2, PyMySQL, pandas, NumPy | `analytics/requirements.txt` |
+| Authentication | JWT bearer, bcrypt, roles on user row | `backend/src/routes/authRoutes.js` |
+| Containerization | Dockerfiles for backend, frontend, analytics. Compose: MySQL, Redis | `docker-compose.yml` |
 
 ---
 
